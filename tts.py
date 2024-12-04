@@ -71,7 +71,9 @@ with open("script.txt",'r',encoding='utf-8') as f:
     subtitles = re.split(r"\n{2,}",f.read())
     for sub in subtitles:
         getIndex = subtitles.index(sub)
+        if not os.path.exists("saves"):
+            os.system("mkdir saves")
         if "\n" in sub:
-            print("edge-tts --voice %s --text \"%s\" --write-media saves/outaudio%d.mp3 --write-subtitles saves/outsubtitle%d.srt" % (selected_actor,sub.replace("\n",""),getIndex,getIndex))
+            os.system("edge-tts --voice %s --text \"%s\" --write-media saves/outaudio%d.mp3 --write-subtitles saves/outsubtitle%d.srt" % (selected_actor,sub.replace("\n",""),getIndex,getIndex))
         else:
-            print("edge-tts --voice %s --text \"%s\" --write-media saves/outaudio%d.mp3 --write-subtitles saves/outsubtitle%d.srt" % (selected_actor,sub,getIndex,getIndex))
+            os.system("edge-tts --voice %s --text \"%s\" --write-media saves/outaudio%d.mp3 --write-subtitles saves/outsubtitle%d.srt" % (selected_actor,sub,getIndex,getIndex))
