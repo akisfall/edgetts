@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import json
 
 try: import edge_tts #這裡無論如何都會執行，只要開程式就會強制裝pip，只能暫時用cls遮擋
 except:
@@ -59,14 +60,40 @@ actors_arr = [
     ]
 ]
 
-print("請輸入您想要的配音員")
-for name,gender,citizenship in zip(actors_arr[0],actors_arr[1],actors_arr[2]):
-    print("%d.%s" % (actors_arr[0].index(name)+1,name))
-    print("性別：%s"% gender)
-    print("國籍：%s"% citizenship)
-selected = int(input())-1
-selected_actor = actors_arr[0][selected]
+def listactors():
+    print("請輸入您想要的配音員")
+    for name,gender,citizenship in zip(actors_arr[0],actors_arr[1],actors_arr[2]):
+        print("%d.%s" % (actors_arr[0].index(name)+1,name))
+        print("性別：%s"% gender)
+        print("國籍：%s"% citizenship)
 
+if not os.path.exists("config.json"):
+    listactors()
+    selected = int(input())-1
+    selected_actor = actors_arr[0][selected]
+    with open('config.json','w') as f:
+        f.write(json.dumps(
+            {
+                "actor": selected_actor,
+            }
+            ))
+else:
+    print("是否繼續使用原有的配音員？")
+    print("輸入N的話可改變配音員，輸入任意鍵（包含空白）皆會繼續使用原本的配音員進行配音。")
+    iscontinue = input("請輸入：")
+    if iscontinue == "N":
+        listactors()
+        selected = int(input())-1
+        selected_actor = actors_arr[0][selected]
+        with open("config.json","w") as f:
+            f.write(json.dumps({
+                "actor" : selected_actor
+            }))
+    else:
+        with open("config.json","r") as f:
+            selected_actor = json.loads(f.read())["actor"]
+
+        
 with open("script.txt",'r',encoding='utf-8') as f:
     subtitles = re.split(r"\n{2,}",f.read())
     for sub in subtitles:
