@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import json
+import time
 
 try: import edge_tts #這裡無論如何都會執行，只要開程式就會強制裝pip，只能暫時用cls遮擋
 except:
@@ -93,14 +94,14 @@ else:
         with open("config.json","r") as f:
             selected_actor = json.loads(f.read())["actor"]
 
-        
+
 with open("script.txt",'r',encoding='utf-8') as f:
     subtitles = re.split(r"\n{2,}",f.read())
     for sub in subtitles:
-        getIndex = subtitles.index(sub)
+        getindex = subtitles.index(sub)+1
         if not os.path.exists("saves"):
-            os.system("mkdir saves")
+                os.system("mkdir saves")
         if "\n" in sub:
-            os.system("edge-tts --voice %s --text \"%s\" --write-media saves/outaudio%d.mp3 --write-subtitles saves/outsubtitle%d.srt" % (selected_actor,sub.replace("\n",""),getIndex,getIndex))
+            os.system("edge-tts --voice %s --text \"%s\" --write-media saves/audio_%d.mp3 --write-subtitles saves/sub_%d.srt" % (selected_actor,sub.replace("\n",""),getindex,getindex))
         else:
-            os.system("edge-tts --voice %s --text \"%s\" --write-media saves/outaudio%d.mp3 --write-subtitles saves/outsubtitle%d.srt" % (selected_actor,sub,getIndex,getIndex))
+            os.system("edge-tts --voice %s --text \"%s\" --write-media saves/audio_%s.mp3 --write-subtitles saves/sub_%s.srt" % (selected_actor,sub,getindex,getindex))
